@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="shortcut icon" href="https://pbs.twimg.com/profile_images/1539317446946918401/fVDmoSE6_normal.png"
+    type="image/x-icon" />
+  <link rel="icon" href="https://pbs.twimg.com/profile_images/1539317446946918401/fVDmoSE6_normal.png"
+    type="image/x-icon" />
+  <link href="https://fonts.googleapis.com/css2?family=Acme&family=Arima&family=Lobster&family=Lobster+Two&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <title>Followers | its-mavi-dev | Web Developer</title>
+</head>
+
+<body>
+  <h1 class="main-title">FOLLOWERS</h1>
+  <div class="main-flex">
+    <div>
+      <h2 class="follow-title">Follows</h2>
+      <div>
+
+        <% if (Array.isArray(followersDetails) && followersDetails.length !== 0) {
+          %>
+        <% for( let i = followersDetails.length - 1; i >= 0 ; i-- ) { %>
+
+        <div class="profile-card">
+          <img class="profile-pic" src="<%= followersDetails[i].profile_image_url %>"
+            alt="<%= followersDetails[i].name %>'s Image">
+          <div>
+            <h3 class="profile-name"><%= followersDetails[i].name %></h3>
+            <a class="profile-username"
+              href="https://twitter.com/<%= followersDetails[i].username %>">@<%= followersDetails[i].username %></a>
+          </div>
+        </div>
+
+        <% } %> <% } %>
+
+      </div>
+    </div>
+    <div>
+      <h2 class="follow-title">UnFollows</h2>
+      <div>
+
+        <% if (Array.isArray(unFollowersDetails) && unFollowersDetails.length !== 0) {
+          %>
+        <% for( let i = unFollowersDetails.length - 1; i >= 0 ; i-- ) { %>
+
+        <div class="profile-card">
+          <img class="profile-pic" src="<%= unFollowersDetails[i].profile_image_url %>"
+            alt="<%= unFollowersDetails[i].name %>'s Image">
+          <div>
+            <h3 class="profile-name"><%= unFollowersDetails[i].name %></h3>
+            <a class="profile-username"
+              href="https://twitter.com/<%= unFollowersDetails[i].username %>">@<%= unFollowersDetails[i].username %></a>
+          </div>
+        </div>
+
+        <% } %> <% } %>
+
+      </div>
+    </div>
+  </div>
+
+  <section class="footer">
+    <h4>
+      Ⓒ Copyright 2022 | Designed & Coded with fun by
+      <a href="https://its-mavi-dev.netlify.app/" target="_blank">Mahaveer</a>.
+    </h4>
+  </section>
+
+</body>
+
+</html>

@@ -1,0 +1,117 @@
+body {
+    background-color: #000000;
+    color: #eeeeee;
+}
+
+.main-title {
+    font-family: "Acme", sans-serif;
+    text-align: center;
+    font-size: 50px;
+    color: #39a2db;
+    animation: rgb 5s linear infinite !important;
+}
+
+.follow-title {
+    font-family: "Acme", sans-serif;
+    text-align: center;
+    font-size: 30px;
+}
+
+.main-flex {
+    display: flex;
+    justify-content: center;
+}
+
+.profile-pic {
+    border: 2.5px solid #34b3f1;
+    width: 50px;
+    height: auto;
+    border-radius: 50px;
+    margin: 0 20px 0 0;
+    animation: rgb-border 5s linear infinite !important;
+}
+
+.profile-card {
+    width: 240px;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    background-color: #171717;
+    padding: 20px;
+    margin: 10px;
+    border-radius: 15px;
+}
+
+.profile-name {
+    font-family: "Arima", cursive;
+    margin: 0;
+}
+
+.profile-username,
+a {
+    font-family: "Lobster", cursive;
+    font-weight: 500;
+    text-decoration: none;
+    color: #34b3f1;
+    animation: rgb 5s linear infinite !important;
+}
+
+.footer {
+    font-family: 'Lobster Two', cursive !important;
+    letter-spacing: 1.5px;
+    word-spacing: 1.7;
+    text-align: center;
+    padding: 80px 0 20px;
+}
+
+@keyframes rgb {
+    0% {
+        color: #4cae4c;
+    }
+
+    20% {
+        color: #409eb5;
+    }
+
+    40% {
+        color: #8134f4;
+    }
+
+    60% {
+        color: #f10e19;
+    }
+
+    80% {
+        color: #ffc505;
+    }
+
+    to {
+        color: #4cae4c;
+    }
+}
+
+@keyframes rgb-border {
+    0% {
+        border-color: #4cae4c;
+    }
+
+    20% {
+        border-color: #409eb5;
+    }
+
+    40% {
+        border-color: #8134f4;
+    }
+
+    60% {
+        border-color: #f10e19;
+    }
+
+    80% {
+        border-color: #ffc505;
+    }
+
+    to {
+        border-color: #4cae4c;
+    }
+}
