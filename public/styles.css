@@ -115,3 +115,15 @@ a {
         border-color: #4cae4c;
     }
 }
+
+@media (max-width: 600px) {
+    body {
+        transform: scale(0.8);
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        transform: scale(0.5);
+    }
+}
