@@ -1,16 +1,64 @@
 const express = require("express");
 const request = require('request');
+const mongoose = require("mongoose");
 require("dotenv").config();
 const app = express();
 
 app.use(express.static("public"));
 app.set("view engine", 'ejs');
 
+const DB_URL = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@cluster0.porxc.mongodb.net/followersDB?retryWrites=true&w=majority`;
+
+mongoose.connect(DB_URL, {
+    useNewUrlParser: true
+});
+
+const followerSchema = new mongoose.Schema({
+    array: {
+        type: Array,
+        required: true
+    }
+});
+
+const PrFollower = mongoose.model("PrFollower", followerSchema),
+    GlFollow = mongoose.model("GlFollow", followerSchema),
+    GlUnFollow = mongoose.model("GlUnFollow", followerSchema),
+    FoDetail = mongoose.model("FoDetail", followerSchema),
+    UnFoDetail = mongoose.model("UnFoDetail", followerSchema);
+
+function errFn(err, docs) {
+    err ? console.log(err) : console.log("Updated Docs : ", docs);
+}
+
+var optns = {
+    upsert: true
+};
+
 var prevFollowers = [],
     globalFollows = [],
     globalUnFollows = [],
     followersDetails = [],
     unFollowersDetails = [];
+
+PrFollower.find({}).then(d => {
+    prevFollowers = d.length !== 0 ? d[0].array : [];
+});
+
+GlFollow.find({}).then(d => {
+    globalFollows = d.length !== 0 ? d[0].array : [];
+});
+
+GlUnFollow.find({}).then(d => {
+    globalUnFollows = d.length !== 0 ? d[0].array : [];
+});
+
+FoDetail.find({}).then(d => {
+    followersDetails = d.length !== 0 ? d[0].array : [];
+});
+
+UnFoDetail.find({}).then(d => {
+    unFollowersDetails = d.length !== 0 ? d[0].array : [];
+});
 
 function getUserDetails(idArray, flag) {
     if (!Array.isArray(idArray) || idArray.length === 0)
@@ -66,9 +114,6 @@ function getData() {
             return;
         }
 
-        // if (prevFollowers.length === 0)
-        //     console.table(followers0);
-
         followers = followers0.map((element) => element.id);
 
         var newFollower = []; //New Followers
@@ -77,19 +122,35 @@ function getData() {
         unFollower = diffFollowers(followers, prevFollowers);
 
         if (newFollower.length !== 0) {
-            // console.log("New Followers");
-            // console.table(newFollower);
             globalFollows.push(...newFollower);
-            followersDetails = getUserDetails(globalFollows, 1);
+            getUserDetails(globalFollows, 1);
         }
         if (unFollower.length !== 0) {
-            // console.log("unFollowers");
-            // console.table(unFollower);
             globalUnFollows.push(...unFollower);
-            unFollowersDetails = getUserDetails(globalUnFollows, 2);
+            getUserDetails(globalUnFollows, 2);
         }
 
         prevFollowers = followers;
+
+        PrFollower.updateOne({}, {
+            array: prevFollowers
+        }, optns, errFn);
+
+        GlFollow.updateOne({}, {
+            array: globalFollows
+        }, optns, errFn);
+
+        GlUnFollow.updateOne({}, {
+            array: globalUnFollows
+        }, optns, errFn);
+
+        FoDetail.updateOne({}, {
+            array: followersDetails
+        }, optns, errFn);
+
+        UnFoDetail.updateOne({}, {
+            array: unFollowersDetails
+        }, optns, errFn);
     });
 }
 
