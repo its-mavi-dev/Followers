@@ -61,30 +61,32 @@ UnFoDetail.find({}).then(d => {
 });
 
 function getUserDetails(idArray, flag) {
-    if (!Array.isArray(idArray) || idArray.length === 0)
-        return [];
+    return new Promise((resolve, reject) => {
+        if (!Array.isArray(idArray) || idArray.length === 0)
+            return [];
 
-    var userIds = idArray.toString();
-    var options = {
-        'method': 'GET',
-        'url': `${process.env.ID_URL}${userIds}`,
-        'headers': {
-            'Authorization': `Bearer ${process.env.BEARER}`,
-            'Cookie': `guest_id=${process.env.GUEST_ID}`
-        }
-    };
-    request(options, function (error, response) {
-        if (error)
-            throw new Error(error);
-        var results = JSON.parse(response.body).data;
+        var userIds = idArray.toString();
+        var options = {
+            'method': 'GET',
+            'url': `${process.env.ID_URL}${userIds}`,
+            'headers': {
+                'Authorization': `Bearer ${process.env.BEARER}`,
+                'Cookie': `guest_id=${process.env.GUEST_ID}`
+            }
+        };
+        request(options, async function (error, response) {
+            if (error) reject(error);
+            var results = JSON.parse(response.body).data;
 
-        if (flag == 1) { //followers
-            followersDetails = results;
-        }
-        if (flag == 2) { //unfollowers
-            unFollowersDetails = results;
-        }
-    });
+            if (flag == 1) { //followers
+                followersDetails = results;
+            }
+            if (flag == 2) { //unfollowers
+                unFollowersDetails = results;
+            }
+            resolve(results);
+        });
+    })
 }
 
 function diffFollowers(first, second) { //pc = F || cp = U
@@ -94,71 +96,95 @@ function diffFollowers(first, second) { //pc = F || cp = U
     return second.filter(x => !first.includes(x));
 }
 
-function getData() {
-    var options = {
-        'method': 'GET',
-        'url': process.env.URL,
-        'headers': {
-            'Authorization': `Bearer ${process.env.BEARER}`,
-            'Cookie': `guest_id=${process.env.GUEST_ID}`
-        }
-    };
-    request(options, function (error, response) {
-        if (error)
-            throw new Error(error);
-        var followers = [];
-        var followers0 = [];
-        followers0 = JSON.parse(response.body).data;
-        if (!Array.isArray(followers0) || followers0.length === 0) {
-            console.log(`Twitter Errors on ::  ` + response.body);
-            return;
-        }
+let resultsArr = [],
+    i = "";
 
-        followers = followers0.map((element) => element.id);
+function loopth(NT) {
+    return new Promise((resolve, reject) => {
+        i = NT == "" ? "" : `&pagination_token=${NT}`;
+        var options = {
+            'method': 'GET',
+            'url': `${process.env.URL}?user.fields=profile_image_url,username,name${i}`,
+            'headers': {
+                'Authorization': `Bearer ${process.env.BEARER}`,
+                'Cookie': `guest_id=${process.env.GUEST_ID}`
+            }
+        };
 
-        var newFollower = []; //New Followers
-        newFollower = diffFollowers(prevFollowers, followers);
-        var unFollower = []; //unFollower
-        unFollower = diffFollowers(followers, prevFollowers);
+        request(options, async function (error, response) {
+            if (error) reject(error);
 
-        if (newFollower.length !== 0) {
-            globalFollows.push(...newFollower);
-            getUserDetails(globalFollows, 1);
-        }
-        if (unFollower.length !== 0) {
-            globalUnFollows.push(...unFollower);
-            getUserDetails(globalUnFollows, 2);
-        }
+            let body = JSON.parse(response.body);
 
-        prevFollowers = followers;
+            if (body.title === "Too Many Requests") reject(body.title)
 
-        PrFollower.updateOne({}, {
-            array: prevFollowers
-        }, optns, errFn);
+            console.log("title: ", body.title);
+            resultsArr.push(...body.data);
 
-        GlFollow.updateOne({}, {
-            array: globalFollows
-        }, optns, errFn);
-
-        GlUnFollow.updateOne({}, {
-            array: globalUnFollows
-        }, optns, errFn);
-
-        FoDetail.updateOne({}, {
-            array: followersDetails
-        }, optns, errFn);
-
-        UnFoDetail.updateOne({}, {
-            array: unFollowersDetails
-        }, optns, errFn);
+            if (body.meta.hasOwnProperty('next_token')) {
+                await loopth(body.meta.next_token);
+            }
+            resolve(resultsArr.length);
+        });
     });
+}
+
+async function getData() {
+    await loopth("");
+
+    var followers = [];
+    var followers0 = [];
+    followers0 = resultsArr;
+    if (!Array.isArray(followers0) || followers0.length === 0) {
+        console.log(`Twitter Errors on ::  ` + response.body);
+        return;
+    }
+
+    followers = followers0.map((element) => element.id);
+
+    var newFollower = []; //New Followers
+    newFollower = diffFollowers(prevFollowers, followers);
+    var unFollower = []; //unFollower
+    unFollower = diffFollowers(followers, prevFollowers);
+
+    if (newFollower.length !== 0) {
+        globalFollows.push(...newFollower);
+        await getUserDetails(globalFollows, 1);
+    }
+    if (unFollower.length !== 0) {
+        globalUnFollows.push(...unFollower);
+        await getUserDetails(globalUnFollows, 2);
+    }
+
+    prevFollowers = followers;
+    resultsArr = [];
+
+    PrFollower.updateOne({}, {
+        array: prevFollowers
+    }, optns, errFn);
+
+    GlFollow.updateOne({}, {
+        array: globalFollows
+    }, optns, errFn);
+
+    GlUnFollow.updateOne({}, {
+        array: globalUnFollows
+    }, optns, errFn);
+
+    FoDetail.updateOne({}, {
+        array: followersDetails
+    }, optns, errFn);
+
+    UnFoDetail.updateOne({}, {
+        array: unFollowersDetails
+    }, optns, errFn);
 }
 
 getData();
 
 setInterval(() => {
     getData();
-}, 60000);
+}, 2 * 60 * 1000);
 
 app.get("/", (req, res) => {
     res.render("index", {
