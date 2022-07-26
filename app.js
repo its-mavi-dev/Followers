@@ -118,7 +118,6 @@ function loopth(NT) {
 
             if (body.title === "Too Many Requests") reject(body.title)
 
-            console.log("title: ", body.title);
             resultsArr.push(...body.data);
 
             if (body.meta.hasOwnProperty('next_token')) {
