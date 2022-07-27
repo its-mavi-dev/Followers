@@ -187,7 +187,7 @@ getData();
 
 setInterval(() => {
     getData();
-}, 2 * 60 * 1000);
+}, 10 * 60 * 1000);
 
 app.get("/", (req, res) => {
     res.render("index", {
