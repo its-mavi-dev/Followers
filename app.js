@@ -34,6 +34,8 @@ var optns = {
     upsert: true
 };
 
+let testVar = 88;
+
 var prevFollowers = [],
     globalFollows = [],
     globalUnFollows = [],
@@ -133,6 +135,7 @@ function loopth(NT) {
 }
 
 async function getData() {
+    console.log("testVar :: ",testVar);
     await loopth("");
 
     var followers = [];
@@ -161,6 +164,7 @@ async function getData() {
 
     prevFollowers = followers;
     resultsArr = [];
+    testVar++;
 
     PrFollower.updateOne({}, {
         array: prevFollowers
