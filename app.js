@@ -118,9 +118,13 @@ function loopth(NT) {
 
             if (body.title === "Too Many Requests") reject(body.title)
 
-            resultsArr.push(...body.data);
+            console.log('body.title :: ', body.title);
 
-            if (body.meta.hasOwnProperty('next_token')) {
+            if (body.hasOwnProperty('data')) {
+                resultsArr.push(...body.data);
+            }
+
+            if (body.hasOwnProperty('meta') && body.meta.hasOwnProperty('next_token')) {
                 await loopth(body.meta.next_token);
             }
             resolve(resultsArr.length);
