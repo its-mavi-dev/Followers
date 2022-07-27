@@ -34,7 +34,7 @@ var optns = {
     upsert: true
 };
 
-let testVar = 88;
+let flagVar = true;
 
 var prevFollowers = [],
     globalFollows = [],
@@ -135,14 +135,13 @@ function loopth(NT) {
 }
 
 async function getData() {
-    console.log("testVar :: ",testVar);
     await loopth("");
 
     var followers = [];
     var followers0 = [];
     followers0 = resultsArr;
     if (!Array.isArray(followers0) || followers0.length === 0) {
-        console.log(`Twitter Errors on ::  ` + response.body);
+        console.log('Twitter Errors');
         return;
     }
 
@@ -164,27 +163,32 @@ async function getData() {
 
     prevFollowers = followers;
     resultsArr = [];
-    testVar++;
 
-    PrFollower.updateOne({}, {
-        array: prevFollowers
-    }, optns, errFn);
+    if (flagVar) {
+        getData();
 
-    GlFollow.updateOne({}, {
-        array: globalFollows
-    }, optns, errFn);
+        flagVar = false;
+    } else {
+        PrFollower.updateOne({}, {
+            array: prevFollowers
+        }, optns, errFn);
 
-    GlUnFollow.updateOne({}, {
-        array: globalUnFollows
-    }, optns, errFn);
+        GlFollow.updateOne({}, {
+            array: globalFollows
+        }, optns, errFn);
 
-    FoDetail.updateOne({}, {
-        array: followersDetails
-    }, optns, errFn);
+        GlUnFollow.updateOne({}, {
+            array: globalUnFollows
+        }, optns, errFn);
 
-    UnFoDetail.updateOne({}, {
-        array: unFollowersDetails
-    }, optns, errFn);
+        FoDetail.updateOne({}, {
+            array: followersDetails
+        }, optns, errFn);
+
+        UnFoDetail.updateOne({}, {
+            array: unFollowersDetails
+        }, optns, errFn);
+    }
 }
 
 getData();
