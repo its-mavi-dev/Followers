@@ -116,7 +116,7 @@ function loopth(NT) {
 
             let body = JSON.parse(response.body);
 
-            if (body.title === "Too Many Requests") reject(body.title)
+            // if (body.title === "Too Many Requests") reject(body.title)
 
             console.log('body.title :: ', body.title);
 
