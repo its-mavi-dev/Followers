@@ -1,6 +1,8 @@
 const express = require("express");
 const request = require('request');
 const mongoose = require("mongoose");
+const favicon = require('serve-favicon');
+const path = require('path');
 require("dotenv").config();
 const app = express();
 
