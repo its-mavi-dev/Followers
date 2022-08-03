@@ -1,14 +1,11 @@
 const express = require("express");
 const request = require('request');
 const mongoose = require("mongoose");
-const favicon = require('serve-favicon');
-const path = require('path');
 require("dotenv").config();
 const app = express();
 
 app.use(express.static("public"));
 app.set("view engine", 'ejs');
-app.use(favicon(path.join(__dirname, 'public', 'images','favicon.png')));
 
 const DB_URL = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@cluster0.porxc.mongodb.net/followersDB?retryWrites=true&w=majority`;
 
