@@ -2,20 +2,18 @@
 
 <br>
 
-It's a Chrome extension that allows developers to keep track of their life's variables.
+It keeps track of my Twitter account's recent new followers and unfollowers.
 
 <br>
 
-![1](https://user-images.githubusercontent.com/104571459/183148567-ee0b8082-f3cb-4963-bd9a-39d03f06959b.png)
+![followers](https://user-images.githubusercontent.com/104571459/183149686-2b34f20f-30f7-4f7c-bf53-de90cecedb4c.jpg)
 
 <br>
 
-It's a Chrome extension that allows developers to keep track of their life's variables.
+It keeps track of my Twitter account's recent new followers and unfollowers.
 
-I've always wanted to create a Chrome extension to keep track of a few things [in key-value format]. So, I created this, it saves things [name/Variable] and their value.
+In this project I've used Twitter API to get my current followers details and then filtering out who is new here added [new follower] and who is not here compared to the previously saved list [new un-followers]
 
-I've created a custom right-click menu by which We can Update and delete our Variable and their values.
-
-I've deployed it on Chrome web store for everyone to use it. And I'm also planning to add many more new features to it.
+Initially, I created it completely and tracked who followed me and who unfollowed me, As soon as the back-end was complete, I added the front-end.
 
 You can check out the Live Link to see the Project.
